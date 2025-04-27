@@ -1,0 +1,46 @@
+export type TCategory =
+	| 'хард-скил'
+	| 'софт-скил'
+	| 'кнопка'
+	| 'дополнительное'
+	| 'другое';
+
+export type TPaymentMethod = 'card' | 'cash' | '';
+
+export type TFormErrors = Partial<Record<keyof IOrder, string>>;
+
+export interface IAppState {
+	catalog: IProduct[];
+	basket: IProduct[] | null;
+	order: IOrder | null;
+	preview: string | null;
+}
+
+export interface IProduct {
+	id: string;
+	description?: string;
+	image?: string;
+	title: string;
+	category?: TCategory;
+	price: number | null;
+}
+
+export interface IOrderAddressForm {
+	payment: TPaymentMethod;
+	address: string;
+}
+
+export interface IOrderContactsForm {
+	email: string;
+	phone: string;
+}
+
+export interface IOrder extends IOrderAddressForm, IOrderContactsForm {
+	items: string[];
+	total: number;
+}
+
+export interface IOrderResult {
+	id: string;
+	total: number;
+}
