@@ -32,10 +32,7 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const orderAddress = new OrderAddressForm(cloneTemplate(addressTemplate), events);
 const orderContact = new OrderContactsForm(cloneTemplate(contactsTemplate), events);
 
-events.onAll(({ eventName, data }) => {
-	console.log(eventName, data);
-});
-
+// Запрос товаров с сервера
 api
 	.getProductList()
 	.then((list) => {
@@ -45,6 +42,7 @@ api
 		console.error(`Ошибка загрузки каталога: ${err}`);
 	});
 
+// Изменился каталог — отображаем карточки на странице
 events.on<TCatalogChangeEvent>('items:change', () => {
 	page.counter = appState.basket.length;
 	page.catalog = appState.catalog.map((item) => {
@@ -60,10 +58,12 @@ events.on<TCatalogChangeEvent>('items:change', () => {
 	});
 });
 
+// Выбран товар для детального просмотра
 events.on('item:select', (item: IProduct) => {
 	appState.setProductPreview(item);
 });
 
+// Получаем товар с сервера по id и отображаем превью
 events.on('preview:open', (item: IProduct) => {
 	api
 		.getProduct(item.id)
@@ -76,9 +76,7 @@ events.on('preview:open', (item: IProduct) => {
 			item.price = data.price;
 
 			const getButtonText = () => {
-				return appState.basket.includes(item)
-					? 'Убрать из корзины'
-					: 'В корзину';
+				return appState.basket.includes(item) ? 'Убрать из корзины' : 'В корзину';
 			};
 			const preview = new ProductPreview(
 				cloneTemplate(productPreviewTemplate),
@@ -106,12 +104,14 @@ events.on('preview:open', (item: IProduct) => {
 		});
 });
 
+// Открыть корзину
 events.on('basket:open', () => {
 	modal.render({
 		content: basket.render(),
 	});
 });
 
+// Изменение товаров в корзине 
 events.on('basket:update', () => {
 	page.counter = appState.basket.length;
 	basket.items = appState.basket.map((item, index) => {
@@ -132,6 +132,7 @@ events.on('basket:update', () => {
 	basket.total = appState.getBasketTotal();
 });
 
+// Открыть окно оформления заказа
 events.on('order:open', () => {
 	appState.order.items = appState.basket.map((item) => item.id);
 	appState.order.total = appState.getBasketTotal();
@@ -145,25 +146,25 @@ events.on('order:open', () => {
 	});
 });
 
+// Изменение выбора метода оплаты
 events.on('order.paymentMethod:change', (data: { value: string }) => {
 	appState.setOrderDetails('payment', data.value);
 });
 
-events.on(
-	'order.address:change',
-	(data: { field: keyof IOrderAddressForm; value: string }) => {
+// Изменение данных в поле ввода адреса
+events.on('order.address:change', (data: { field: keyof IOrderAddressForm; value: string }) => {
 		appState.setOrderDetails('address', data.value);
 	}
 );
 
+// Изменение ошибок валидации формы с адресом
 events.on('addressFormErrors:change', (errors: Partial<IOrderAddressForm>) => {
 	const { payment, address } = errors;
 	orderAddress.valid = !payment && !address;
-	orderAddress.errors = Object.values({ payment, address })
-		.filter((i) => !!i)
-		.join(' и ');
+	orderAddress.errors = Object.values({ payment, address }).filter((i) => !!i).join(' и ');
 });
 
+// Переход с модальному окну с формой для ввода контактов
 events.on('order:submit', () => {
 	modal.render({
 		content: orderContact.render({
@@ -175,24 +176,21 @@ events.on('order:submit', () => {
 	});
 });
 
-events.on(
-	/^contacts\..*:change/,
-	(data: { field: keyof IOrderContactsForm; value: string }) => {
+// Изменение данных в полях ввода контактов
+events.on(/^contacts\..*:change/, (data: { field: keyof IOrderContactsForm; value: string }) => {
 		appState.setContacts(data.field, data.value);
 	}
 );
 
-events.on(
-	'contactsFormErrors:change',
-	(errors: Partial<IOrderContactsForm>) => {
+// Изменение ошибок валидации формы с контактами
+events.on('contactsFormErrors:change', (errors: Partial<IOrderContactsForm>) => {
 		const { email, phone } = errors;
 		orderContact.valid = !email && !phone;
-		orderContact.errors = Object.values({ email, phone })
-			.filter((i) => !!i)
-			.join(' и ');
+		orderContact.errors = Object.values({ email, phone }).filter((i) => !!i).join(' и ');
 	}
 );
 
+// Оформление заказа и отправка данных на сервер
 events.on('contacts:submit', () => {
 	api
 		.orderProducts(appState.order)
@@ -215,6 +213,7 @@ events.on('contacts:submit', () => {
 		});
 });
 
+// Блокировка скролла страницы при открытом модальном окне
 events.on('modal:open', () => {
 	page.locked = true;
 });

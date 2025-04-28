@@ -121,10 +121,10 @@ export class ProductPreview extends ProductCatalog {
 
 	set price(value: number | null) {
 		super.price = value;
-		this.isPriceless(value);
+		this.checkPriceless(value);
 	}
 
-	isPriceless(value: number | null) {
+	private checkPriceless(value: number | null) {
 		if (value === null) {
 			this.setDisabled(this._buyButton, true);
 		}
