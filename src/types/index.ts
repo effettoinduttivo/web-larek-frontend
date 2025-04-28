@@ -14,6 +14,16 @@ export interface IAppState {
 	basket: IProduct[] | null;
 	order: IOrder | null;
 	preview: string | null;
+
+	setCatalog(products: IProduct[]): void;
+	setProductPreview(product: IProduct): void;
+	toggleBasketStatus(product: IProduct): void;
+	getBasketTotal(): number;
+	clearBasket(): void;
+	setOrderDetails(field: keyof IOrderAddressForm, value: string): void;
+	setContacts(field: keyof IOrderContactsForm, value: string): void;
+	validateAddress(): boolean;
+	validateContacts(): boolean;
 }
 
 export interface IProduct {

@@ -1,4 +1,5 @@
 import { IProduct } from '../../types';
+import { categoriesConfig } from '../../utils/constants';
 import { ensureElement } from '../../utils/utils';
 import { Component } from '../base/Component';
 
@@ -49,8 +50,14 @@ export class ProductBasket extends Product {
 	constructor(container: HTMLElement, index: number, action?: ICardAction) {
 		super(container);
 
-		this._index = ensureElement<HTMLElement>('.basket__item-index', this.container);
-		this._deleteButton = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
+		this._index = ensureElement<HTMLElement>(
+			'.basket__item-index',
+			this.container
+		);
+		this._deleteButton = ensureElement<HTMLButtonElement>(
+			'.basket__item-delete',
+			this.container
+		);
 
 		this.setText(this._index, String(index + 1));
 
@@ -67,19 +74,19 @@ export class ProductBasket extends Product {
 export class ProductCatalog extends Product {
 	protected _image: HTMLImageElement;
 	protected _category: HTMLElement;
-	private categories: Record<string, string> = {
-		'софт-скил': '_soft',
-		'хард-скил': '_hard',
-		'другое': '_other',
-		'дополнительное': '_additional',
-		'кнопка': '_button'
-	};
+	private categories: Record<string, string> = categoriesConfig;
 
 	constructor(container: HTMLElement, action?: ICardAction) {
 		super(container);
 
-		this._image = ensureElement<HTMLImageElement>('.card__image', this.container);
-		this._category = ensureElement<HTMLElement>('.card__category', this.container);
+		this._image = ensureElement<HTMLImageElement>(
+			'.card__image',
+			this.container
+		);
+		this._category = ensureElement<HTMLElement>(
+			'.card__category',
+			this.container
+		);
 
 		if (action?.onClick) {
 			container.addEventListener('click', action.onClick);
@@ -92,7 +99,11 @@ export class ProductCatalog extends Product {
 
 	set category(value: string) {
 		this.setText(this._category, value);
-		this._category.classList.add(`card__category${this.categories[value]}`);
+		this.toggleClass(
+			this._category,
+			`card__category${this.categories[value]}`,
+			true
+		);
 	}
 }
 
@@ -103,8 +114,14 @@ export class ProductPreview extends ProductCatalog {
 	constructor(container: HTMLElement, action?: ICardAction) {
 		super(container);
 
-		this._description = ensureElement<HTMLElement>('.card__text', this.container);
-		this._buyButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
+		this._description = ensureElement<HTMLElement>(
+			'.card__text',
+			this.container
+		);
+		this._buyButton = ensureElement<HTMLButtonElement>(
+			'.card__button',
+			this.container
+		);
 
 		if (action.onClick) {
 			this._buyButton.addEventListener('click', action.onClick);

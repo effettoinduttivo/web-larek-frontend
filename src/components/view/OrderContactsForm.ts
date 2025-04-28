@@ -10,15 +10,21 @@ export class OrderContactsForm extends Form<IOrderContactsForm> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._emailInput = ensureElement<HTMLInputElement>('input[name=email]', this.container);
-		this._phoneInput = ensureElement<HTMLInputElement>('input[name=phone]', this.container);
+		this._emailInput = ensureElement<HTMLInputElement>(
+			'input[name=email]',
+			this.container
+		);
+		this._phoneInput = ensureElement<HTMLInputElement>(
+			'input[name=phone]',
+			this.container
+		);
 	}
 
-  set email(value: string) {
-    this._emailInput.value = value;
-  }
+	set email(value: string) {
+		this._emailInput.value = value;
+	}
 
-  set phone(value: string) {
-    this._phoneInput.value = value;
-  }
+	set phone(value: string) {
+		this._phoneInput.value = value;
+	}
 }

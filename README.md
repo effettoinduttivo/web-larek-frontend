@@ -61,6 +61,16 @@ interface IAppState {
 	basket: IProduct[] | null;
 	order: IOrder | null;
 	preview: string | null;
+
+	setCatalog(products: IProduct[]): void;
+	setProductPreview(product: IProduct): void;
+	toggleBasketStatus(product: IProduct): void;
+	getBasketTotal(): number;
+	clearBasket(): void;
+	setOrderDetails(field: keyof IOrderAddressForm, value: string): void;
+	setContacts(field: keyof IOrderContactsForm, value: string): void;
+	validateAddress(): boolean;
+	validateContacts(): boolean;
 }
 ```
 
@@ -241,6 +251,7 @@ type TFormErrors = Partial<Record<keyof IOrder, string>>
 Сеттеры и методы:
 - address: string — установка адреса доставки
 - pickPayment(method: TPaymentMethod): void — приватный метод для выбора способа оплаты. Переключает CSS-класс `button_alt-active` для визуального выделения выбранного метода и вызывает событие изменения способа оплаты
+- cancelPaymentSelection(): void — отменяет выбранный способ оплаты (например, после успешного оформления заказа)
 
 #### Класс OrderContactsForm
 Наследует базовый класс Form для реализации формы с указанием почты и номера телефона. Поля класса содержат соответствующие инпуты, также класс содержит сеттеры для установки почты и телефона.
@@ -260,7 +271,6 @@ type TFormErrors = Partial<Record<keyof IOrder, string>>
 
 Использует следующие методы:
 - getProductList: () => Promise<IProduct[]> — получение списка товаров 
-- getProduct: (id: string) => Promise<IProduct> — получение одного товара по его id 
 - orderProducts: (order: IOrder) => Promise<IOrderResult> — отправляет заказ со всеми контактными данными на сервер 
 
 ## Взаимодействие компонентов

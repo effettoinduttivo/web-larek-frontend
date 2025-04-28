@@ -8,14 +8,21 @@ import { cloneTemplate, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
 import { Basket } from './components/view/Basket';
 import { IOrderAddressForm, IOrderContactsForm, IProduct } from './types';
-import { ProductBasket, ProductCatalog, ProductPreview } from './components/view/Product';
+import {
+	ProductBasket,
+	ProductCatalog,
+	ProductPreview,
+} from './components/view/Product';
 import { OrderAddressForm } from './components/view/OrderAddressForm';
 import { OrderContactsForm } from './components/view/OrderContactsForm';
 import { OrderSuccess } from './components/view/OrderSuccess';
 
-const productCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
-const productPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
-const productBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const productCatalogTemplate =
+	ensureElement<HTMLTemplateElement>('#card-catalog');
+const productPreviewTemplate =
+	ensureElement<HTMLTemplateElement>('#card-preview');
+const productBasketTemplate =
+	ensureElement<HTMLTemplateElement>('#card-basket');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const addressTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
@@ -29,8 +36,14 @@ const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-const orderAddress = new OrderAddressForm(cloneTemplate(addressTemplate), events);
-const orderContact = new OrderContactsForm(cloneTemplate(contactsTemplate), events);
+const orderAddress = new OrderAddressForm(
+	cloneTemplate(addressTemplate),
+	events
+);
+const orderContact = new OrderContactsForm(
+	cloneTemplate(contactsTemplate),
+	events
+);
 
 // Запрос товаров с сервера
 api
@@ -63,45 +76,27 @@ events.on('item:select', (item: IProduct) => {
 	appState.setProductPreview(item);
 });
 
-// Получаем товар с сервера по id и отображаем превью
+// Отображаем превью товара
 events.on('preview:open', (item: IProduct) => {
-	api
-		.getProduct(item.id)
-		.then((data: IProduct) => {
-			item.id = data.id;
-			item.description = data.description;
-			item.image = data.image;
-			item.title = data.title;
-			item.category = data.category;
-			item.price = data.price;
-
-			const getButtonText = () => {
-				return appState.basket.includes(item) ? 'Убрать из корзины' : 'В корзину';
-			};
-			const preview = new ProductPreview(
-				cloneTemplate(productPreviewTemplate),
-				{
-					onClick: () => {
-						appState.toggleBasketStatus(item);
-						preview.buyButtonText = getButtonText();
-					},
-				}
-			);
+	const getButtonText = () => {
+		return appState.basket.includes(item) ? 'Убрать из корзины' : 'В корзину';
+	};
+	const preview = new ProductPreview(cloneTemplate(productPreviewTemplate), {
+		onClick: () => {
+			appState.toggleBasketStatus(item);
 			preview.buyButtonText = getButtonText();
-
-			modal.render({
-				content: preview.render({
-					description: item.description,
-					image: item.image,
-					title: item.title,
-					category: item.category,
-					price: item.price,
-				}),
-			});
-		})
-		.catch((err) => {
-			console.error(`Ошибка загрузки товара: ${err}`);
-		});
+		},
+	});
+	preview.buyButtonText = getButtonText();
+	modal.render({
+		content: preview.render({
+			description: item.description,
+			image: item.image,
+			title: item.title,
+			category: item.category,
+			price: item.price,
+		}),
+	});
 });
 
 // Открыть корзину
@@ -111,7 +106,7 @@ events.on('basket:open', () => {
 	});
 });
 
-// Изменение товаров в корзине 
+// Изменение товаров в корзине
 events.on('basket:update', () => {
 	page.counter = appState.basket.length;
 	basket.items = appState.basket.map((item, index) => {
@@ -152,7 +147,9 @@ events.on('order.paymentMethod:change', (data: { value: string }) => {
 });
 
 // Изменение данных в поле ввода адреса
-events.on('order.address:change', (data: { field: keyof IOrderAddressForm; value: string }) => {
+events.on(
+	'order.address:change',
+	(data: { field: keyof IOrderAddressForm; value: string }) => {
 		appState.setOrderDetails('address', data.value);
 	}
 );
@@ -161,7 +158,9 @@ events.on('order.address:change', (data: { field: keyof IOrderAddressForm; value
 events.on('addressFormErrors:change', (errors: Partial<IOrderAddressForm>) => {
 	const { payment, address } = errors;
 	orderAddress.valid = !payment && !address;
-	orderAddress.errors = Object.values({ payment, address }).filter((i) => !!i).join(' и ');
+	orderAddress.errors = Object.values({ payment, address })
+		.filter((i) => !!i)
+		.join(' и ');
 });
 
 // Переход с модальному окну с формой для ввода контактов
@@ -177,16 +176,22 @@ events.on('order:submit', () => {
 });
 
 // Изменение данных в полях ввода контактов
-events.on(/^contacts\..*:change/, (data: { field: keyof IOrderContactsForm; value: string }) => {
+events.on(
+	/^contacts\..*:change/,
+	(data: { field: keyof IOrderContactsForm; value: string }) => {
 		appState.setContacts(data.field, data.value);
 	}
 );
 
 // Изменение ошибок валидации формы с контактами
-events.on('contactsFormErrors:change', (errors: Partial<IOrderContactsForm>) => {
+events.on(
+	'contactsFormErrors:change',
+	(errors: Partial<IOrderContactsForm>) => {
 		const { email, phone } = errors;
 		orderContact.valid = !email && !phone;
-		orderContact.errors = Object.values({ email, phone }).filter((i) => !!i).join(' и ');
+		orderContact.errors = Object.values({ email, phone })
+			.filter((i) => !!i)
+			.join(' и ');
 	}
 );
 
@@ -196,6 +201,7 @@ events.on('contacts:submit', () => {
 		.orderProducts(appState.order)
 		.then((data) => {
 			appState.clearBasket();
+			orderAddress.cancelPaymentSelection();
 			const orderSuccess = new OrderSuccess(cloneTemplate(successTemplate), {
 				onClick: () => {
 					modal.close();

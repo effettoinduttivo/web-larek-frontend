@@ -11,9 +11,18 @@ export class OrderAddressForm extends Form<IOrderAddressForm> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._addressInput = ensureElement<HTMLInputElement>('input[name=address]', this.container);
-		this._cardButton = ensureElement<HTMLButtonElement>('button[name=card]', this.container);
-		this._cashButton = ensureElement<HTMLButtonElement>('button[name=cash]', this.container);
+		this._addressInput = ensureElement<HTMLInputElement>(
+			'input[name=address]',
+			this.container
+		);
+		this._cardButton = ensureElement<HTMLButtonElement>(
+			'button[name=card]',
+			this.container
+		);
+		this._cashButton = ensureElement<HTMLButtonElement>(
+			'button[name=cash]',
+			this.container
+		);
 
 		this._cardButton.addEventListener('click', () => this.pickPayment('card'));
 		this._cashButton.addEventListener('click', () => this.pickPayment('cash'));
@@ -28,7 +37,11 @@ export class OrderAddressForm extends Form<IOrderAddressForm> {
 		this.toggleClass(this._cashButton, 'button_alt-active', method === 'cash');
 
 		this.events.emit(`${this.container.name}.paymentMethod:change`, {
-			value: method
+			value: method,
 		});
+	}
+
+	cancelPaymentSelection(): void {
+		this.pickPayment('');
 	}
 }

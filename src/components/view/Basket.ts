@@ -17,7 +17,10 @@ export class Basket extends Component<IBasket> {
 
 		this._items = ensureElement<HTMLElement>('.basket__list', this.container);
 		this._total = ensureElement<HTMLElement>('.basket__price', this.container);
-		this._submitButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
+		this._submitButton = ensureElement<HTMLButtonElement>(
+			'.basket__button',
+			this.container
+		);
 
 		this.items = [];
 		this._submitButton.addEventListener('click', () => {

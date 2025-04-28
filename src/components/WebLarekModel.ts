@@ -1,4 +1,13 @@
-import { IAppState, IOrder, IOrderAddressForm, IOrderContactsForm, IProduct, TFormErrors, TPaymentMethod } from '../types';
+import {
+	IAppState,
+	IOrder,
+	IOrderAddressForm,
+	IOrderContactsForm,
+	IProduct,
+	TFormErrors,
+	TPaymentMethod,
+} from '../types';
+import { formErrorsConfig } from '../utils/constants';
 import { Model } from './base/Model';
 
 export type TCatalogChangeEvent = {
@@ -72,10 +81,10 @@ export class AppState extends Model<IAppState> {
 	private validateAddress(): boolean {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.payment) {
-			errors.payment = 'Выберите способ оплаты';
+			errors.payment = formErrorsConfig.paymentError;
 		}
 		if (!this.order.address) {
-			errors.address = 'Укажите адрес доставки';
+			errors.address = formErrorsConfig.addressError;
 		}
 		this.formErrors = errors;
 		this.events.emit('addressFormErrors:change', this.formErrors);
@@ -85,10 +94,10 @@ export class AppState extends Model<IAppState> {
 	private validateContacts(): boolean {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.email) {
-			errors.email = 'Введите email';
+			errors.email = formErrorsConfig.emailError;
 		}
 		if (!this.order.phone) {
-			errors.phone = 'Введите номер телефона';
+			errors.phone = formErrorsConfig.phoneError;
 		}
 		this.formErrors = errors;
 		this.events.emit('contactsFormErrors:change', this.formErrors);
