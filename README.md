@@ -119,7 +119,7 @@ interface IOrderResult {
 type TCategory = 'хард-скил' | 'софт-скил' | 'кнопка' | 'дополнительное' | 'другое'
 ```
 
-Методы отплаты
+Методы оплаты
 
 ```
 type TPaymentMethod = 'card' | 'cash' | ''
