@@ -25,17 +25,11 @@ export class AppState extends Model<IAppState> {
 		email: '',
 		phone: '',
 	};
-	preview: string | null;
 	formErrors: TFormErrors = {};
 
 	setCatalog(products: IProduct[]): void {
 		this.catalog = products;
 		this.emitChanges('items:change', { catalog: this.catalog });
-	}
-
-	setProductPreview(product: IProduct): void {
-		this.preview = product.id;
-		this.emitChanges('preview:open', product);
 	}
 
 	toggleBasketStatus(product: IProduct): void {

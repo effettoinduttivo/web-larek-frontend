@@ -1,6 +1,6 @@
 # Проектная работа “Web-ларёк”
 ## Описание проекта 
-Веб-ларек — это интернет-магазин товаров для разработчиков, выполненный с использованием TypeScript и принципов объектно-ориентированного программирования.
+Веб-ларёк — это интернет-магазин товаров для разработчиков, выполненный с использованием TypeScript и принципов объектно-ориентированного программирования.
 
 Основная функциональность позволяет:
 - просмотреть каталог товаров
@@ -60,17 +60,16 @@ interface IAppState {
 	catalog: IProduct[];
 	basket: IProduct[] | null;
 	order: IOrder | null;
-	preview: string | null;
+	formErrors: TFormErrors;
 
-	setCatalog(products: IProduct[]): void;
-	setProductPreview(product: IProduct): void;
-	toggleBasketStatus(product: IProduct): void;
-	getBasketTotal(): number;
-	clearBasket(): void;
-	setOrderDetails(field: keyof IOrderAddressForm, value: string): void;
-	setContacts(field: keyof IOrderContactsForm, value: string): void;
-	validateAddress(): boolean;
-	validateContacts(): boolean;
+	setCatalog(products: IProduct[]): void; // устанавливает каталог товаров
+	toggleBasketStatus(product: IProduct): void; // добавляет товар в корзину или удаляет оттуда
+	getBasketTotal(): number; // получает общую стоимость товаров в корзине
+	clearBasket(): void; // очищает корзину
+	setOrderDetails(field: keyof IOrderAddressForm, value: string): void; // устанавливает значение полей оплаты и адреса
+	setContacts(field: keyof IOrderContactsForm, value: string): void; // устанавливает значение полей с почтой и телефоном
+	validateAddress(): boolean; // валидирует метод оплаты и адрес
+	validateContacts(): boolean; // валидирует почту и телефон
 }
 ```
 
@@ -176,12 +175,10 @@ type TFormErrors = Partial<Record<keyof IOrder, string>>
 - catalog: IProduct[] — массив объектов товаров каталога
 -	basket: IProduct[] — массив товаров, добавленных в корзину
 -	order: IOrder — данные о заказе
--	preview: string | null — id выбранного для открытия в модальном окне товара
 -	formErrors: TFormErrors — объект ошибок валидации полей заказа 
 
 Для взаимодействия с данными используются следующие методы:
 - setCatalog(products: IProduct[]): void — устанавливает значение поля catalog, вызывает событие изменения карточек 
-- setProductPreview(product: IProduct): void — устанавливает id переданной карточки в preview, вызывает событие открытия модального окна товара 
 - toggleBasketStatus(product: IProduct): void — изменяет статус товара в корзине на противоположный 
 - getBasketTotal(): number — считает сумму товаров в корзине 
 - clearBasket(): void — очищает корзину и данные заказа, вызывает обновление отображения, связанного с корзиной 
@@ -282,7 +279,6 @@ type TFormErrors = Partial<Record<keyof IOrder, string>>
 
 *События изменения данных*
 - `items:change` — изменение массива товаров
-- `item:select` — выбор товара для детального просмотра 
 - `basket:update` — изменение данных корзины
 
 *События, возникающие при взаимодействии пользователя с интерфейсом*

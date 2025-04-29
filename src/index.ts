@@ -60,7 +60,7 @@ events.on<TCatalogChangeEvent>('items:change', () => {
 	page.counter = appState.basket.length;
 	page.catalog = appState.catalog.map((item) => {
 		const product = new ProductCatalog(cloneTemplate(productCatalogTemplate), {
-			onClick: () => events.emit('item:select', item),
+			onClick: () => events.emit('preview:open', item),
 		});
 		return product.render({
 			category: item.category,
@@ -69,11 +69,6 @@ events.on<TCatalogChangeEvent>('items:change', () => {
 			price: item.price,
 		});
 	});
-});
-
-// Выбран товар для детального просмотра
-events.on('item:select', (item: IProduct) => {
-	appState.setProductPreview(item);
 });
 
 // Отображаем превью товара

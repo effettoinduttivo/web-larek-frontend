@@ -13,10 +13,9 @@ export interface IAppState {
 	catalog: IProduct[];
 	basket: IProduct[] | null;
 	order: IOrder | null;
-	preview: string | null;
+	formErrors: TFormErrors;
 
 	setCatalog(products: IProduct[]): void;
-	setProductPreview(product: IProduct): void;
 	toggleBasketStatus(product: IProduct): void;
 	getBasketTotal(): number;
 	clearBasket(): void;
